@@ -24,6 +24,41 @@ int lex(char *input_buffer, token_t *output_buffer) {
             strncpy(output_buffer[output_index].raw, "double", 7);
             output_index++;
             i += 5;
+        } else if (strncmp(&input_buffer[i], "float", 5) == 0) {
+            output_buffer[output_index].type = TOKEN_CONST;
+            strncpy(output_buffer[output_index].raw, "float", 6);
+            output_index++;
+            i += 4;
+        } else if (strncmp(&input_buffer[i], "int", 3) == 0) {
+            output_buffer[output_index].type = TOKEN_CONST;
+            strncpy(output_buffer[output_index].raw, "int", 4);
+            output_index++;
+            i += 2;
+        } else if (strncmp(&input_buffer[i], "short", 5) == 0) {
+            output_buffer[output_index].type = TOKEN_CONST;
+            strncpy(output_buffer[output_index].raw, "short", 6);
+            output_index++;
+            i += 4;
+        } else if (strncmp(&input_buffer[i], "struct", 6) == 0) {
+            output_buffer[output_index].type = TOKEN_CONST;
+            strncpy(output_buffer[output_index].raw, "short", 7);
+            output_index++;
+            i += 5;
+        } else if (strncmp(&input_buffer[i], "unsigned", 8) == 0) {
+            output_buffer[output_index].type = TOKEN_CONST;
+            strncpy(output_buffer[output_index].raw, "short", 9);
+            output_index++;
+            i += 7;
+        } else if (strncmp(&input_buffer[i], "break", 5) == 0) {
+            output_buffer[output_index].type = TOKEN_CONST;
+            strncpy(output_buffer[output_index].raw, "short", 6);
+            output_index++;
+            i += 4;
+        } else if (strncmp(&input_buffer[i], "continue", 8) == 0) {
+            output_buffer[output_index].type = TOKEN_CONST;
+            strncpy(output_buffer[output_index].raw, "short", 9);
+            output_index++;
+            i += 7;
         }
     }
 
