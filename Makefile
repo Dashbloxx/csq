@@ -10,7 +10,7 @@ all: csq
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OUTPUT): $(OBJS)
+csq: $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean:

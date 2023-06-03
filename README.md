@@ -1,3 +1,3 @@
 # C²
 ## About
-C² is a new programming language designed to be similar to the point where it is compatible with the C programming language, while having a few more features. This repository is to contain source code for the C² compiler (named CSQ), and documentation that describes the design & syntax of the language. For now though, the compiler is being written to be compatible with only C first. After that is done, the design & syntax will be defined & implemented into the CSQ compiler.
+C² is a new programming language designed to be similar to the point where it is compatible with the C programming language, while having a few more features. This repository is to contain source code for the C² compiler, and documentation that describes the design & syntax of the language. For now though, the compiler is being written to be compatible with only C first. After that is done, the design & syntax will be defined & implemented into the C² compiler.
