@@ -52,12 +52,13 @@ typedef enum {
     TOKEN_AT,
     TOKEN_OPENING_SQUARE_BRACKET,
     TOKEN_CLOSING_SQUARE_BRACKET,
-    TOKEN_VERTICAL_BAR,
+    TOKEN_OR,
     TOKEN_CARET,
     TOKEN_DASH,
     TOKEN_ARMENIAN_COMMA,
     TOKEN_OPENING_BRACKET,
-    TOKEN_CLOSING_BRACKET
+    TOKEN_CLOSING_BRACKET,
+    TOKEN_BIGGER_THAN,
 } token_t;
 
-int lex(char *input_buffer, char *output_buffer);
+int lex(char *input_buffer, token_t *output_buffer);
