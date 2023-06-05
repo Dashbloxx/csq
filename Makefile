@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra
+CFLAGS = -std=c11
 
 SRCS := $(wildcard source/*.c)
 
