@@ -1,6 +1,18 @@
 #pragma once
 
-typedef enum {
+enum {
+    TOKEN_TYPE_KEYWORD,
+    TOKEN_TYPE_IDENTIFIER,
+    TOKEN_TYPE_CONSTANT,
+    TOKEN_TYPE_OPERATOR,
+    TOKEN_TYPE_SEPARATOR,
+    TOKEN_TYPE_STRING_LITERAL,
+    TOKEN_TYPE_COMMENT,
+    TOKEN_TYPE_UNKNOWN,
+    TOKEN_TYPE_CHARACTER_LITERAL
+};
+
+enum {
     TOKEN_AUTO,
     TOKEN_CONST,
     TOKEN_DOUBLE,
@@ -59,6 +71,13 @@ typedef enum {
     TOKEN_OPENING_BRACKET,
     TOKEN_CLOSING_BRACKET,
     TOKEN_BIGGER_THAN,
+};
+
+typedef struct {
+    int type;
+    char lexeme[128];
 } token_t;
 
-int lex(char *input_buffer, token_t *output_buffer);
+void lex(const char* code);
+
+// int lex(char *input_buffer, token_t *output_buffer);

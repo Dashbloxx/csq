@@ -16,12 +16,7 @@
 int compile(char *input_buffer, char *output_buffer) {
     token_t *token_buffer = malloc(sizeof(token_t) * BUFFER_SIZE);
 
-    lex(input_buffer, token_buffer);
-    
-    for(unsigned int i = 0; i <= BUFFER_SIZE; i++) {
-        printf("%02d ", token_buffer[i]);
-    }
-    printf("\n");
+    lex(input_buffer);
 
     free(token_buffer);
 }

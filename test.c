@@ -1,1 +1,7 @@
-if auto auto if if auto if if if if auto
+extern putc(char c);
+
+int main() {
+    printf("Hello, world!\n");
+    putc('H');
+    return 0;
+}
