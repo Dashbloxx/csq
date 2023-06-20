@@ -78,6 +78,5 @@ typedef struct {
     char lexeme[128];
 } token_t;
 
-void lex(const char* code);
-
-// int lex(char *input_buffer, token_t *output_buffer);
+token_t** lex(const char* code, int* num_tokens);
+void free_tokens(token_t** tokens, int num_tokens);

@@ -9,6 +9,10 @@
 #include "main.h"
 #include "logger.h"
 
+/**
+ *  @brief Check if inputted string is a keyword or not...
+ *  @param word pointer to string containing the actual string data...
+ */
 static int iskeyword(const char* word) {
     const char* keywords[] = {
         "auto", "break", "case", "char", "const", "continue", "default",
@@ -28,20 +32,22 @@ static int iskeyword(const char* word) {
     return 0;
 }
 
-// Function to tokenize the input C code
-void lex(const char* code) {
+/**
+ *  @brief Return token array generated from lexer (this)...
+ *  @param code Pointer to string that contains C code...
+ *  @param num_tokens Amount of tokens in the token array that is to be returned...
+ */
+token_t** lex(const char* code, int* num_tokens) {
     int len = strlen(code);
     int pos = 0;
-    token_t tokens[4096];
-    int numTokens = 0;
+    token_t** tokens = malloc(sizeof(token_t*) * len);
+    *num_tokens = 0;
 
     while (pos < len) {
-        /* Skip whitespace... */
         while (isspace(code[pos])) {
             pos++;
         }
 
-        /** @brief Check for specific types of tokens... */
         if (isalpha(code[pos]) || code[pos] == '_') {
             int start = pos;
             while (isalnum(code[pos]) || code[pos] == '_') {
@@ -53,14 +59,15 @@ void lex(const char* code) {
             strncpy(lexeme, code + start, length);
             lexeme[length] = '\0';
 
-            token_t token;
+            token_t* token = malloc(sizeof(token_t));
             if (iskeyword(lexeme)) {
-                token.type = TOKEN_TYPE_KEYWORD;
+                token->type = TOKEN_TYPE_KEYWORD;
             } else {
-                token.type = TOKEN_TYPE_IDENTIFIER;
+                token->type = TOKEN_TYPE_IDENTIFIER;
             }
-            strncpy(token.lexeme, lexeme, length + 1);
-            tokens[numTokens++] = token;
+            strncpy(token->lexeme, lexeme, length + 1);
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
 
             free(lexeme);
         }
@@ -75,27 +82,32 @@ void lex(const char* code) {
             strncpy(lexeme, code + start, length);
             lexeme[length] = '\0';
 
-            token_t token;
-            token.type = TOKEN_TYPE_CONSTANT;
-            strncpy(token.lexeme, lexeme, length + 1);
-            tokens[numTokens++] = token;
+            token_t* token = malloc(sizeof(token_t));
+            token->type = TOKEN_TYPE_CONSTANT;
+            strncpy(token->lexeme, lexeme, length + 1);
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
 
             free(lexeme);
         }
         else if (code[pos] == '+' || code[pos] == '-' || code[pos] == '*' || code[pos] == '/') {
-            token_t token;
-            token.type = TOKEN_TYPE_OPERATOR;
-            token.lexeme[0] = code[pos];
-            token.lexeme[1] = '\0';
-            tokens[numTokens++] = token;
+            token_t* token = malloc(sizeof(token_t));
+            token->type = TOKEN_TYPE_OPERATOR;
+            token->lexeme[0] = code[pos];
+            token->lexeme[1] = '\0';
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
+
             pos++;
         }
         else if (strchr(",;(){}[]", code[pos])) {
-            token_t token;
-            token.type = TOKEN_TYPE_SEPARATOR;
-            token.lexeme[0] = code[pos];
-            token.lexeme[1] = '\0';
-            tokens[numTokens++] = token;
+            token_t* token = malloc(sizeof(token_t));
+            token->type = TOKEN_TYPE_SEPARATOR;
+            token->lexeme[0] = code[pos];
+            token->lexeme[1] = '\0';
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
+
             pos++;
         }
         else if (code[pos] == '"') {
@@ -111,10 +123,11 @@ void lex(const char* code) {
             strncpy(lexeme, code + start, length);
             lexeme[length] = '\0';
 
-            token_t token;
-            token.type = TOKEN_TYPE_STRING_LITERAL;
-            strncpy(token.lexeme, lexeme, length + 1);
-            tokens[numTokens++] = token;
+            token_t* token = malloc(sizeof(token_t));
+            token->type = TOKEN_TYPE_STRING_LITERAL;
+            strncpy(token->lexeme, lexeme, length + 1);
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
 
             free(lexeme);
         }
@@ -131,10 +144,11 @@ void lex(const char* code) {
             strncpy(lexeme, code + start, length);
             lexeme[length] = '\0';
 
-            token_t token;
-            token.type = TOKEN_TYPE_CHARACTER_LITERAL;
-            strncpy(token.lexeme, lexeme, length + 1);
-            tokens[numTokens++] = token;
+            token_t* token = malloc(sizeof(token_t));
+            token->type = TOKEN_TYPE_CHARACTER_LITERAL;
+            strncpy(token->lexeme, lexeme, length + 1);
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
 
             free(lexeme);
         }
@@ -150,25 +164,37 @@ void lex(const char* code) {
             strncpy(lexeme, code + start, length);
             lexeme[length] = '\0';
 
-            token_t token;
-            token.type = TOKEN_TYPE_COMMENT;
-            strncpy(token.lexeme, lexeme, length + 1);
-            tokens[numTokens++] = token;
+            token_t* token = malloc(sizeof(token_t));
+            token->type = TOKEN_TYPE_COMMENT;
+            strncpy(token->lexeme, lexeme, length + 1);
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
 
             free(lexeme);
         }
         else {
-            token_t token;
-            token.type = TOKEN_TYPE_UNKNOWN;
-            token.lexeme[0] = code[pos];
-            token.lexeme[1] = '\0';
-            tokens[numTokens++] = token;
+            token_t* token = malloc(sizeof(token_t));
+            token->type = TOKEN_TYPE_UNKNOWN;
+            token->lexeme[0] = code[pos];
+            token->lexeme[1] = '\0';
+            tokens[*num_tokens] = token;
+            (*num_tokens)++;
+
             pos++;
         }
     }
 
-    /* Print out the tokens... */
-    for (int i = 0; i < numTokens; i++) {
-        printf("TOKEN TYPE: %d, TOKEN: %s\n", tokens[i].type, tokens[i].lexeme);
+    return tokens;
+}
+
+/**
+ *  @brief De-allocate token array that is returned by lexer function...
+ *  @param tokens Token array...
+ *  @param num_tokens Amount of tokens in token array...
+ */
+void free_tokens(token_t** tokens, int num_tokens) {
+    for (int i = 0; i < num_tokens; i++) {
+        free(tokens[i]);
     }
+    free(tokens);
 }
