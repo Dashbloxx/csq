@@ -1,8 +1,6 @@
-extern putc(char c);
+extern int printf(const char *fmt, ...);
 
 int main() {
     printf("Hello, world!\n");
-    putc('H');
-    int i = 2 + 14;
     return 0;
 }
