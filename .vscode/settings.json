@@ -1,5 +1,15 @@
 {
-    "files.exclude": {
-        "**/*.o": true
-    }
+	"files.exclude": {
+		"**/*.o": true
+	},
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.tabSize": 4,
+	"editor.trimAutoWhitespace": true,
+	"editor.renderWhitespace": "boundary",
+	"editor.renderControlCharacters": true,
+	"files.associations": {
+		"cstdlib": "c",
+		"stdlib.h": "c"
+	}
 }

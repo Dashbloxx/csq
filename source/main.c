@@ -1,50 +1,77 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
 
-#include "logger.h"
-#include "compiler.h"
-#include "main.h"
+#ifdef _WIN32
+#define ENDL "\r\n"
+#elif defined(__unix__) || defined(__unix) || defined(__linux__)
+#define ENDL "\n"
+#endif
 
-int main(int argc, const char *argv[]) {
-    FILE *input_file_pointer, *output_file_pointer;
-    char *input_file_contents, *output_file_contents;
-    
-    input_file_contents = malloc(BUFFER_SIZE);
-    output_file_contents = malloc(BUFFER_SIZE);
-    
-    if(argc != 3) {
-        sendf(stderr, LOG_ERROR, "Usage: csq <file.csq> <output.o>\n");
-        return -1;
-    }
+FILE *fileitem = NULL;
+const char *filename = NULL;
+size_t filesize = 0;
+char *contents = NULL;
 
-    input_file_pointer = fopen(argv[1], "r");
-    if (input_file_pointer == NULL) {
-        sendf(stderr, LOG_ERROR, "Failed to open %s for reading...\n", argv[1]);
-        return -1;
-    }
+int main(int argc, const char *argv[])
+{
+	for(int i = 0; i < argc; i++)
+	{
+		if(strcmp(argv[i], "--file") == 0)
+		{
+			if(i + 1 < argc)
+			{
+				filename = argv[i + 1];
+			}
+			else
+			{
+				fprintf(stderr, "error: The flag `--file` has been specified, however no file was specified after it." ENDL);
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
 
-    fread(input_file_contents, sizeof(char), BUFFER_SIZE, input_file_pointer);
+	fileitem = fopen(filename, "r");
 
-    if(compile(input_file_contents, output_file_contents) != 0) {
-        sendf(stderr, LOG_ERROR, "Failed to compile code...\n");
-        free(input_file_contents);
-        free(output_file_contents);
-        return -1;
-    }
+	if(fileitem == NULL)
+	{
+		fprintf(stderr, "error: Failed to open `%s` for reading!" ENDL, filename);
+		
+		exit(EXIT_FAILURE);
+	}
 
-    output_file_pointer = fopen(argv[2], "w");
-    if (output_file_pointer == NULL) {
-        sendf(stderr, LOG_ERROR, "Failed to open %s for writing...\n", argv[2]);
-        return -1;
-    }
+	fseek(fileitem, 0, SEEK_END);
+	filesize = ftell(fileitem);
+	rewind(fileitem);
 
-    fwrite(output_file_contents, sizeof(char), strlen(output_file_contents), output_file_pointer);
+	contents = (char *)malloc(filesize + 1);
 
-    free(input_file_contents);
-    free(output_file_contents);
-    fclose(input_file_pointer);
-    fclose(output_file_pointer);
+	if(contents == NULL)
+	{
+		fprintf(stderr, "error: Memory allocation failed!" ENDL);
+		fclose(fileitem);
 
-    return 0;
+		exit(EXIT_FAILURE);
+	}
+
+	size_t bytes_read = fread(contents, sizeof(char), filesize, fileitem);
+
+	if (bytes_read != filesize)
+	{
+		fprintf(stderr, "error: Failed to read the entire file!" ENDL);
+		free(contents);
+		fclose(fileitem);
+
+		exit(EXIT_FAILURE);
+	}
+
+	contents[filesize] = '\0';
+
+	
+
+	free(contents);
+	fclose(fileitem);
+
+	exit(EXIT_SUCCESS);
 }
