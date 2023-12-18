@@ -3,6 +3,10 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "string.h"
+#include "vector.h"
+#include "lex.h"
+
 #ifdef _WIN32
 #define ENDL "\r\n"
 #elif defined(__unix__) || defined(__unix) || defined(__linux__)
@@ -68,7 +72,27 @@ int main(int argc, const char *argv[])
 
 	contents[filesize] = '\0';
 
-	
+	string_t source, assembly;
+	string_create(&source);
+	string_create(&assembly);
+	string_copy(&source, contents);
+
+	vector_t tokens;
+	vector_create(&tokens);
+
+	int status = lex(&source, &tokens);
+	if(status != 0)
+	{
+		string_delete(&source);
+		string_delete(&assembly);
+		vector_free(&tokens);
+
+		fprintf(stderr, "error: Lexer returned a non-0 value!" ENDL);
+	}
+
+	string_delete(&source);
+	string_delete(&assembly);
+	vector_free(&tokens);
 
 	free(contents);
 	fclose(fileitem);
