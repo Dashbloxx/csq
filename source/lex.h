@@ -7,7 +7,7 @@
 
 static inline bool is_whitespace(char character)
 {
-	return character == ' ' || character == '\t' || character == '\f' || character == '\v';
+	return character == ' ' || character == '\t' || character == '\f' || character == '\v' || character == '\n' || character == '\r';
 }
 
 static inline bool is_alphabet(char character)
