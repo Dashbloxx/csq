@@ -25,4 +25,9 @@ static inline bool is_digit(char character)
 	return character >= '0' && character <= '9';
 }
 
+static inline bool is_valid_identifier_char(char character)
+{
+	return is_alphanumeric(character) || character == '_';
+}
+
 int lex(string_t *code, vector_t *tokens);
