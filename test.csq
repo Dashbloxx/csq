@@ -1,1 +1,9 @@
-void int int void intlen void lolint vintoid void extern
+extern void puts(char *string);
+
+char myarray[] = {'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\r', '\n'};
+
+int main()
+{
+	puts("Hello, world!\r\n") ;
+	return 0 ;
+}
