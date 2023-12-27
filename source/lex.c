@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 
 #include "string.h"
 #include "vector.h"
 #include "lex.h"
+#include "endl.h"
 
 const char *keywords[] = {
 	"auto", "break", "case", "char", "const", "continue", "default", "do",
@@ -52,7 +54,12 @@ int lex(string_t *code, vector_t *tokens)
 		{
 			if(strncmp(keywords[j], code->memory + i, strlen(keywords[j])) == 0 && (is_whitespace(*(code->memory + i + strlen(keywords[j]))) || *(code->memory + i + strlen(keywords[j])) == '\0') && (i == 0 || is_whitespace(*(code->memory + i - 1))))
 			{
-				printf("%s\r\n", keywords[j]);
+				token_t *token = malloc(sizeof(token_t));
+				string_create(&token->value_keyword);
+				string_copy(&token->value_keyword, (char *)&keywords[j]);
+				vector_pushback(tokens, token);
+
+				printf("%s" ENDL, keywords[j]);
 				i += strlen(keywords[j]);
 				
 				continue;
@@ -64,7 +71,12 @@ int lex(string_t *code, vector_t *tokens)
 		{
 			if(strncmp(symbols[j], code->memory + i, strlen(symbols[j])) == 0)
 			{
-				printf("%s\r\n", symbols[j]);
+				token_t *token = malloc(sizeof(token_t));
+				string_create(&token->value_symbol);
+				string_copy(&token->value_symbol, (char *)&keywords[j]);
+				vector_pushback(tokens, token);
+
+				printf("%s" ENDL, symbols[j]);
 				i += strlen(symbols[j]);
 				
 				continue;
@@ -82,20 +94,24 @@ int lex(string_t *code, vector_t *tokens)
 				switch(code->memory[j])
 				{
 				case 'n':
-					printf("'\\n'\r\n");
+					printf("'\\n'" ENDL);
 					j++;
 					break;
 				case 't':
-					printf("'\\t'\r\n");
+					printf("'\\t'" ENDL);
 					j++;
 					break;
 				case 'r':
-					printf("'\\r'\r\n");
+					printf("'\\r'" ENDL);
 					j++;
 					break;
 				case '\'':
 				case '\"':
 				case '\\':
+					token_t *token = malloc(sizeof(token_t));
+					token->value_char = code->memory[j];
+					vector_pushback(tokens, token);
+
 					printf("'\\%c'\r\n", code->memory[j]);
 					j++;
 					break;
@@ -111,7 +127,11 @@ int lex(string_t *code, vector_t *tokens)
 			}
 			else
 			{
-				printf("'%c'\r\n", code->memory[j]);
+				token_t *token = malloc(sizeof(token_t));
+				token->value_char = code->memory[j];
+				vector_pushback(tokens, token);
+
+				printf("'%c'" ENDL, code->memory[j]);
 				j++;
 			}
 
@@ -128,32 +148,31 @@ int lex(string_t *code, vector_t *tokens)
 		}
 
 		/* Handle string literals. */
-		if (code->memory[i] == '\"')
+		if(code->memory[i] == '\"')
 		{
 			int j = i + 1;
+
+			token_t *token = malloc(sizeof(token_t));
+			string_create(&token->value_string);
+
 			printf("\"");
 
-			while (j < code->size && code->memory[j] != '\"')
+			while(j < code->size && code->memory[j] != '\"')
 			{
 				/* Check for escape sequence(s). */
-				if (code->memory[j] == '\\')
+				if(code->memory[j] == '\\')
 				{
 					j++;
-					switch (code->memory[j])
+					switch(code->memory[j])
 					{
 					case 'n':
-						printf("\\n");
-						break;
 					case 't':
-						printf("\\t");
-						break;
 					case 'r':
-						printf("\\r");
-						break;
 					case '\"':
 					case '\'':
 					case '\\':
 						printf("\\%c", code->memory[j]);
+						string_concatenate_character(&token->value_string, code->memory[j]);
 						break;
 					default:
 						/* Invalid escape sequence! */
@@ -164,6 +183,7 @@ int lex(string_t *code, vector_t *tokens)
 				{
 					/* Handle a regular character. */
 					printf("%c", code->memory[j]);
+					string_concatenate_character(&token->value_string, code->memory[j]);
 				}
 
 				j++;
@@ -171,7 +191,7 @@ int lex(string_t *code, vector_t *tokens)
 
 			if (j < code->size && code->memory[j] == '\"')
 			{
-				printf("\"\r\n");
+				printf("\"" ENDL);
 				i = j + 1;
 				continue;
 			}
@@ -185,6 +205,9 @@ int lex(string_t *code, vector_t *tokens)
 		/* Handle identifiers. */
 		if(is_alphabet(code->memory[i]) || code->memory[i] == '_')
 		{
+			token_t *token = malloc(sizeof(token_t));
+			string_create(&token->value_identifier);
+
 			int j = i + 1;
 			while(j < code->size && is_valid_identifier_char(code->memory[j]))
 			{

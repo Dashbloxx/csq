@@ -6,12 +6,7 @@
 #include "string.h"
 #include "vector.h"
 #include "lex.h"
-
-#ifdef _WIN32
-#define ENDL "\r\n"
-#elif defined(__unix__) || defined(__unix) || defined(__linux__)
-#define ENDL "\n"
-#endif
+#include "endl.h"
 
 FILE *fileitem = NULL;
 const char *filename = NULL;

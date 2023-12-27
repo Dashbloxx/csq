@@ -18,12 +18,12 @@ void vector_create(vector_t *vector)
 
 int vector_total(vector_t *vector)
 {
-	int totalCount = UNDEFINE;
+	int total_count = UNDEFINE;
 	if(vector)
 	{
-		totalCount = vector->vector_list.total;
+		total_count = vector->vector_list.total;
 	}
-	return totalCount;
+	return total_count;
 }
 
 int vector_resize(vector_t *vector, int capacity)

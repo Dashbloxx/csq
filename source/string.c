@@ -202,6 +202,64 @@ int string_split(string_t *input, char *delimiter, vector_t *output_vector)
 	return 0;
 }
 
+
+/**
+ * @brief Concatenate a character to a string object.
+ * @param string The string object to concatenate to.
+ * @param character The character to be concatenated.
+ * @return Returns a status code. Will always return 0 in this case.
+ */
+int string_concatenate_character(string_t *string, char character)
+{
+	if (string->allocated == false)
+	{
+		string->memory = malloc(2);
+		string->allocated = true;
+	}
+	else
+	{
+		string->memory = realloc(string->memory, string->size + 2);
+		string->allocated = true;
+	}
+
+	string->memory[string->size] = character;
+	string->memory[string->size + 1] = '\0';
+	string->size += 1;
+
+	return 0;
+}
+
+/**
+ * @brief Copy a specified number of characters from a buffer to a string object.
+ * @param string The string object to have the data copied to.
+ * @param buffer The buffer that should be copied to the string object.
+ * @param count The number of characters to copy.
+ * @return Returns a status code. Will always return 0 in this case.
+ */
+int string_copy_n(string_t *string, const char *buffer, size_t count)
+{
+	if (buffer == NULL || count == 0)
+	{
+		return 0;
+	}
+
+	if (string->allocated == false)
+	{
+		string->memory = malloc(count + 1);
+		string->allocated = true;
+	}
+	else
+	{
+		string->memory = realloc(string->memory, string->size + count + 1);
+	}
+
+	strncpy(string->memory + string->size, buffer, count);
+	string->memory[string->size + count] = '\0';
+	string->size += count;
+
+	return 0;
+}
+
 /**
  *	@brief de-initialize a string object.
  *	@param string A pointer to the string object.
