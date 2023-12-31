@@ -1,9 +1,1 @@
-extern void puts(char *string);
-
-char myarray[] = {'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\r', '\n'};
-
-int main()
-{
-	puts("Hello, world!\r\n");
-	return 0;
-}
+float my_float = 1.43f;

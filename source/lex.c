@@ -55,6 +55,7 @@ int lex(string_t *code, vector_t *tokens)
 			if(strncmp(keywords[j], code->memory + i, strlen(keywords[j])) == 0 && (is_whitespace(*(code->memory + i + strlen(keywords[j]))) || *(code->memory + i + strlen(keywords[j])) == '\0') && (i == 0 || is_whitespace(*(code->memory + i - 1))))
 			{
 				token_t *token = malloc(sizeof(token_t));
+				token->type = TYPE_KEYWORD;
 				string_create(&token->value_keyword);
 				string_copy(&token->value_keyword, (char *)&keywords[j]);
 				vector_pushback(tokens, token);
@@ -72,6 +73,7 @@ int lex(string_t *code, vector_t *tokens)
 			if(strncmp(symbols[j], code->memory + i, strlen(symbols[j])) == 0)
 			{
 				token_t *token = malloc(sizeof(token_t));
+				token->type = TYPE_SYMBOL;
 				string_create(&token->value_symbol);
 				string_copy(&token->value_symbol, (char *)&keywords[j]);
 				vector_pushback(tokens, token);
@@ -109,6 +111,7 @@ int lex(string_t *code, vector_t *tokens)
 				case '\"':
 				case '\\':
 					token_t *token = malloc(sizeof(token_t));
+					token->type = TYPE_CHAR;
 					token->value_char = code->memory[j];
 					vector_pushback(tokens, token);
 
@@ -128,6 +131,7 @@ int lex(string_t *code, vector_t *tokens)
 			else
 			{
 				token_t *token = malloc(sizeof(token_t));
+				token->type = TYPE_CHAR;
 				token->value_char = code->memory[j];
 				vector_pushback(tokens, token);
 
@@ -153,6 +157,7 @@ int lex(string_t *code, vector_t *tokens)
 			int j = i + 1;
 
 			token_t *token = malloc(sizeof(token_t));
+			token->type = TYPE_STRING;
 			string_create(&token->value_string);
 
 			printf("\"");
@@ -206,6 +211,7 @@ int lex(string_t *code, vector_t *tokens)
 		if(is_alphabet(code->memory[i]) || code->memory[i] == '_')
 		{
 			token_t *token = malloc(sizeof(token_t));
+			token->type = TYPE_IDENTIFIER;
 			string_create(&token->value_identifier);
 
 			int j = i + 1;
@@ -214,7 +220,62 @@ int lex(string_t *code, vector_t *tokens)
 				j++;
 			}
 
-			printf("%.*s\r\n", j - i, code->memory + i);
+			/* Might edit this later so that we don't need to use `sprintf`. */
+			char buffer[128];
+			sprintf(buffer, "%.*s", j - i, code->memory + i);
+
+			string_copy(&token->value_identifier, buffer);
+
+			printf("%s" ENDL, token->value_identifier.memory);
+
+			i = j;
+			continue;
+		}
+
+		/* We still haven't finished handling numbers! This will be implemented very soon. */
+		if(is_digit(code->memory[i]) || (code->memory[i] == '.' && is_digit(code->memory[i + 1])))
+		{
+			int j = i;
+			bool is_float = false;
+
+			while (is_digit(code->memory[j]) || code->memory[j] == '.')
+			{
+				if(code->memory[j] == '.')
+				{
+					is_float = true;
+				}
+
+				j++;
+			}
+
+			if (is_float && code->memory[j] == 'f')
+			{
+				j++;
+			}
+
+			token_t *token = malloc(sizeof(token_t));
+			token->type = is_float ? TYPE_FLOAT : (is_valid_identifier_char(code->memory[i]) ? TYPE_IDENTIFIER : TYPE_INTEGER);
+
+			if(is_float == true)
+				string_create(&token->value_float);
+			else if(is_float == false)
+				string_create(&token->value_integer);
+
+			char buffer[128];
+			strncpy(buffer, code->memory + i, j - i);
+			buffer[j - i] = '\0';
+
+			if(is_float == true)
+				string_copy(&token->value_float, buffer);
+			else if(is_float == false)
+				string_copy(&token->value_integer, buffer);
+
+			vector_pushback(tokens, token);
+
+			if(is_float == true)
+				printf("%s" ENDL, token->value_float.memory);
+			else if(is_float == false)
+				printf("%s" ENDL, token->value_integer.memory);
 
 			i = j;
 			continue;
