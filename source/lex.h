@@ -45,13 +45,16 @@ typedef enum
 
 typedef struct
 {
-	string_t value_string;
-	string_t value_identifier;
-	string_t value_keyword;
-	string_t value_symbol;
-	char value_char;
-	string_t value_integer;
-	string_t value_float;
+	union
+	{
+		string_t stringlit;
+		string_t identifier;
+		string_t keyword;
+		string_t symbol;
+		char charlit;
+		string_t integerlit;
+		string_t floatlit;
+	} value;
 	type_t type;
 } token_t;
 

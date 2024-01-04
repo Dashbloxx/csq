@@ -56,8 +56,8 @@ int lex(string_t *code, vector_t *tokens)
 			{
 				token_t *token = malloc(sizeof(token_t));
 				token->type = TYPE_KEYWORD;
-				string_create(&token->value_keyword);
-				string_copy(&token->value_keyword, (char *)&keywords[j]);
+				string_create(&token->value.keyword);
+				string_copy(&token->value.keyword, (char *)&keywords[j]);
 				vector_pushback(tokens, token);
 
 				printf("%s" ENDL, keywords[j]);
@@ -74,8 +74,8 @@ int lex(string_t *code, vector_t *tokens)
 			{
 				token_t *token = malloc(sizeof(token_t));
 				token->type = TYPE_SYMBOL;
-				string_create(&token->value_symbol);
-				string_copy(&token->value_symbol, (char *)&keywords[j]);
+				string_create(&token->value.symbol);
+				string_copy(&token->value.symbol, (char *)&keywords[j]);
 				vector_pushback(tokens, token);
 
 				printf("%s" ENDL, symbols[j]);
@@ -112,7 +112,7 @@ int lex(string_t *code, vector_t *tokens)
 				case '\\':
 					token_t *token = malloc(sizeof(token_t));
 					token->type = TYPE_CHAR;
-					token->value_char = code->memory[j];
+					token->value.charlit = code->memory[j];
 					vector_pushback(tokens, token);
 
 					printf("'\\%c'\r\n", code->memory[j]);
@@ -132,7 +132,7 @@ int lex(string_t *code, vector_t *tokens)
 			{
 				token_t *token = malloc(sizeof(token_t));
 				token->type = TYPE_CHAR;
-				token->value_char = code->memory[j];
+				token->value.charlit = code->memory[j];
 				vector_pushback(tokens, token);
 
 				printf("'%c'" ENDL, code->memory[j]);
@@ -158,7 +158,7 @@ int lex(string_t *code, vector_t *tokens)
 
 			token_t *token = malloc(sizeof(token_t));
 			token->type = TYPE_STRING;
-			string_create(&token->value_string);
+			string_create(&token->value.stringlit);
 
 			printf("\"");
 
@@ -177,7 +177,7 @@ int lex(string_t *code, vector_t *tokens)
 					case '\'':
 					case '\\':
 						printf("\\%c", code->memory[j]);
-						string_concatenate_character(&token->value_string, code->memory[j]);
+						string_concatenate_character(&token->value.stringlit, code->memory[j]);
 						break;
 					default:
 						/* Invalid escape sequence! */
@@ -188,7 +188,7 @@ int lex(string_t *code, vector_t *tokens)
 				{
 					/* Handle a regular character. */
 					printf("%c", code->memory[j]);
-					string_concatenate_character(&token->value_string, code->memory[j]);
+					string_concatenate_character(&token->value.stringlit, code->memory[j]);
 				}
 
 				j++;
@@ -212,7 +212,7 @@ int lex(string_t *code, vector_t *tokens)
 		{
 			token_t *token = malloc(sizeof(token_t));
 			token->type = TYPE_IDENTIFIER;
-			string_create(&token->value_identifier);
+			string_create(&token->value.identifier);
 
 			int j = i + 1;
 			while(j < code->size && is_valid_identifier_char(code->memory[j]))
@@ -224,9 +224,9 @@ int lex(string_t *code, vector_t *tokens)
 			char buffer[128];
 			sprintf(buffer, "%.*s", j - i, code->memory + i);
 
-			string_copy(&token->value_identifier, buffer);
+			string_copy(&token->value.identifier, buffer);
 
-			printf("%s" ENDL, token->value_identifier.memory);
+			printf("%s" ENDL, token->value.identifier.memory);
 
 			i = j;
 			continue;
@@ -257,25 +257,25 @@ int lex(string_t *code, vector_t *tokens)
 			token->type = is_float ? TYPE_FLOAT : (is_valid_identifier_char(code->memory[i]) ? TYPE_IDENTIFIER : TYPE_INTEGER);
 
 			if(is_float == true)
-				string_create(&token->value_float);
+				string_create(&token->value.floatlit);
 			else if(is_float == false)
-				string_create(&token->value_integer);
+				string_create(&token->value.integerlit);
 
 			char buffer[128];
 			strncpy(buffer, code->memory + i, j - i);
 			buffer[j - i] = '\0';
 
 			if(is_float == true)
-				string_copy(&token->value_float, buffer);
+				string_copy(&token->value.floatlit, buffer);
 			else if(is_float == false)
-				string_copy(&token->value_integer, buffer);
+				string_copy(&token->value.integerlit, buffer);
 
 			vector_pushback(tokens, token);
 
 			if(is_float == true)
-				printf("%s" ENDL, token->value_float.memory);
+				printf("%s" ENDL, token->value.floatlit.memory);
 			else if(is_float == false)
-				printf("%s" ENDL, token->value_integer.memory);
+				printf("%s" ENDL, token->value.integerlit.memory);
 
 			i = j;
 			continue;
