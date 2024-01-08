@@ -5,5 +5,8 @@
 
 typedef struct
 {
-	
+	union
+	{
+		
+	} 
 } object_t;
