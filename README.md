@@ -10,5 +10,7 @@ I believe that in order to create the language, there must also be a working imp
 	- The parser recieves the neat vector of tokens & produces a tree of objects representing the program.
 	- This tree of objects that represent the program can also be known as abstract syntax tree.
 - [ ] Code generation
-	- This step is where low-level assembly is generated from analyzing the tree of objects that represent the program, outputted by the parser. This low-level assembly is outputted, and that's when the compiler's job finishes.
+	- This step is where low-level assembly is generated from analyzing the tree of objects that represent the program, outputted by the parser.
+	- This low-level assembly is outputted, and that's when the compiler's job finishes.
+
 So for now, we only have the lexer finished to a point where it's usable (it just lexes regular C source code). Currently, the parser is what's being worked on.
