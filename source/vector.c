@@ -2,6 +2,10 @@
 
 #include "vector.h"
 
+/**
+ *	@brief Initialize a vector object.
+ *	@param vector The pointer to the vector object.
+ */
 void vector_create(vector_t *vector)
 {
 	vector->vector_total = vector_total;
@@ -16,6 +20,11 @@ void vector_create(vector_t *vector)
 	vector->vector_list.items = malloc(sizeof(void *) * vector->vector_list.capacity);
 }
 
+/**
+ *	@brief Get the total amount of items in a vector object.
+ *	@param vector The pointer to the vector object.
+ *	@return The total count of items in the vector object.
+ */
 int vector_total(vector_t *vector)
 {
 	int total_count = UNDEFINE;
@@ -26,6 +35,12 @@ int vector_total(vector_t *vector)
 	return total_count;
 }
 
+/**
+ *	@brief Change the size of a vector object.
+ *	@param vector The pointer to the vector object.
+ *	@param capacity The size that we should re-size the vector object to.
+ *	@return The status code from re-sizing the vector object.
+ */
 int vector_resize(vector_t *vector, int capacity)
 {
 	int status = UNDEFINE;
@@ -42,6 +57,13 @@ int vector_resize(vector_t *vector, int capacity)
 	return status;
 }
 
+/**
+ *	@brief Add a pointer of an object to the vector object.
+ *	@param vector The pointer to the vector object.
+ *	@param item The pointer to the object that should be added to the vector
+ *				object.
+ *	@return The status code from adding the object to the vector object.
+ */
 int vector_pushback(vector_t *vector, void *item)
 {
 	int status = UNDEFINE;
@@ -93,6 +115,13 @@ void *vector_get(vector_t *vector, int index)
 	return read_data;
 }
 
+/**
+ *	@brief Delete an entry from a vector object.
+ *	@param vector The vector object to target.
+ *	@param index The index of the vector object in which we want to delete the
+ *				 entry.
+ *	@return The status code from deleting the entry from the vector object.
+*/
 int vector_delete(vector_t *vector, int index)
 {
 	int status = UNDEFINE;
@@ -117,6 +146,11 @@ int vector_delete(vector_t *vector, int index)
 	return status;
 }
 
+/**
+ *	@brief De-initialize a vector object.
+ *	@param vector The pointer to the vector object.
+ *	@return The status code from de-initializing the vector object.
+ */
 int vector_free(vector_t *vector)
 {
 	int status = UNDEFINE;

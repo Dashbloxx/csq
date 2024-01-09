@@ -1,3 +1,12 @@
 # C²
 ## About
-C² is a new programming language designed to be similar to the point where it is compatible with the C programming language, while having a few more features. This repository is to contain source code for the C² compiler, and documentation that describes the design & syntax of the language. For now though, the compiler is being written to be compatible with only C first. After that is done, the design & syntax will be defined & implemented into the C² compiler.
+This repository is to contain the compiler for a small programming language I am crafting, which is intended to be a language that shares certain Rust features, while keeping the syntax of the C programming language.
+## Roadmap
+I believe that in order to create the language, there must also be a working implementation of it, such as a working compiler or interpreter that can handle the designed programming language. Therefore, a large part of the development roadmap is the development of the C² compiler:
+- [X] Lexer
+	- The lexer chews down the raw C² source code, and produces a neat vector of the parsed tokens, which are to be fed into the parser.
+- [ ] Parser
+	- The parser recieves the neat vector of tokens & produces a tree of objects representing the program.
+- [ ] Code generation
+	- This step is where low-level assembly is generated from analyzing the tree of objects that represent the program, outputted by the parser. This low-level assembly is outputted, and that's when the compiler's job finishes.
+So for now, we only have the lexer finished to a point where it's usable (it just lexes regular C source code). Currently, the parser is what's being worked on.
