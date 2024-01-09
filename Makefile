@@ -14,4 +14,4 @@ csq: $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
-	@rm -f $(OBJS) csq *.exe
+	@rm -f $(OBJS) csq
